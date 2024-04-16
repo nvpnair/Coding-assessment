@@ -71,8 +71,10 @@ class FirstFragment : Fragment(), onDetailsClickListener {
         }
 
         viewModel.fetchPosts()
-        viewModel.postList.observe(viewLifecycleOwner) { newData ->
-            newData?.let { it ->
+        viewModel.postList.observe(viewLifecycleOwner) {
+
+            if (it.isNotEmpty()&& viewModel.observePostList) {
+                viewModel.observePostList= false
                 dataList.addAll(it)
                 if (currentPage == 0) {
                     initialData.addAll(
@@ -83,6 +85,7 @@ class FirstFragment : Fragment(), onDetailsClickListener {
                     )
                     currentPage++
                     postAdapter.notifyDataSetChanged()
+
                 }
             }
         }
@@ -153,9 +156,11 @@ class FirstFragment : Fragment(), onDetailsClickListener {
 
     private fun fetchData(page: Int, pageSize: Int, callback: (List<PostData>?) -> Unit) {
         delayScope.launch {
-            delay(300)
+            showLoader()
+            delay(1000)
             val newData = generateSampleData(page, pageSize)
             callback(newData)
+            hideLoader()
         }
     }
 
