@@ -135,6 +135,10 @@ class FirstFragment : Fragment(), onDetailsClickListener {
     private fun loadMoreData() {
         isLoading = true
         currentPage++
+        val totalpage=dataList.size/pageSize
+        if(currentPage>totalpage){
+            isLastPage = true
+        }
         fetchData(currentPage, pageSize) { newData ->
             isLoading = false
             if (newData.isNullOrEmpty()) {
